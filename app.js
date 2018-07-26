@@ -9,7 +9,7 @@ var config = require('./config/config');
 require('./db')(config);
 
 var authRoute = require('./routes/auth')(config);
-// var userRoute = require('./routes/users')(config);
+var userRoute = require('./routes/users')(config);
 // var productRoute = require('./routes/products')();
 var dashboard = require('./routes/dashboard')();
 
@@ -31,7 +31,7 @@ app.use(expressValidator());
 app.use(cors());
 app.use('/', dashboard);
 app.use('/auth', authRoute);
-app.use('/user', authenticate, dashboard);
+app.use('/user', authenticate, userRoute);
 // app.use('/product', productRoute);
 
 app.use(function(req, res, next) {
