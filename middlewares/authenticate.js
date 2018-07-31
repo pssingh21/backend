@@ -19,7 +19,6 @@ module.exports = function(req,res,next){
 			if(err){
 				return next(err);
 			}
-			console.log('Done is ',decoded);
 			if(decoded){
 				UserModel.findById(decoded.id,function(err,user){
 					if(err){

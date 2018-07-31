@@ -9,9 +9,6 @@ var userSchema = new Schema({
 		required:true
 	},
 	password:String,
-	dateOfBirth:{
-		type:Date
-	},
 	contactNumber:Number,
 	email:{
 		type:String,

@@ -5,73 +5,71 @@ var mongoCLient = mongodb.MongoClient;
 var oid = mongodb.ObjectId;
 var UserModel = require('./../models/userModel');
 var mapUser = require('./../helpers/mapUser');
+var jwt = require('jsonwebtoken');
+module.exports = function(config) {
 
-module.exports = function(config){
+    //fetch all users
+    router.get('/', function(req, res, next) {
+        UserModel.find({}, function(err, users) {
+            if (err) {
+                return next(err);
+            }
+            res.json(users);
+        });
+    });
 
-	//fetch all users
-	router.get('/',function(req,res,next){
-		UserModel.find({},function(err,users){
-			if(err){
-				return next(err);
-			}
-			res.json(users);
-		});
-	});
+    //findOne user
+    router.get('/account', function(req, res, next) {
+        var decoded = jwt.decode(req.headers.authorization, {
+            complete: true
+        });
+        UserModel.find({
+            username: decoded.payload.username
+        }, function(err, user) {
+            if (err) {
+                return next(err);
+            }
+            res.json(user);
+        })
+    });
 
-	//findOne user
-	router.get('/:id',function(req,res,next){
-		UserModel.findById(req.params.id,function(err,user){
-			if(err){
-				return next(err);
-			}
-			res.json(user);
-		});
-	});
+    router.put('/edit', function(req, res, next) {
+        var decoded = jwt.decode(req.headers.authorization, {
+            complete: true
+        });
+        UserModel.findById(decoded.payload.id, function(err, user) {
+            if (err) {
+                return next(err);
+            }
+            var updatedUser = mapUser(user, req.body);
+            updatedUser.save(function(err, done) {
+                if (err) {
+                    return next(err);
+                }
+                res.json({
+                    status: 200,
+                    message: "User updated"
+                });
+            });
+        });
+    });
 
-	router.put('/:id',function(req,res,next){
-		var id = req.params.id;
-		UserModel.findById(id,function(err,user){
-			if(err){
-				return next(err);
-			}
-			if(user){
-				var updatedUser = mapUser(user,req.body);
-				updatedUser.save(function(err,done){
-					if(err){
-						return next(err);
-					}
-					res.json(done);
-				});
-			}else{
-				next({
-					status:204,
-					message:'User not found'
-				});
-			}
-		});
-	});
+    router.delete('/delete', function(req, res, next) {
+        var decoded = jwt.decode(req.headers.authorization, {
+            complete: true
+        });
+        UserModel.findById(decoded.payload.id, function(err, user) {
+            if (err) {
+                return next(err);
+            }
+            user.remove(function(err, done) {
+                if (err) {
+                    return next(err);
+                }
+                res.json(done);
+            });
+        });
+    });
 
-	router.delete('/:id',function(req,res,next){
-		var id = req.params.id;
-		UserModel.findById(id,function(err,user){
-			if(err){
-				return next(err);
-			}
-			if(user){
-				user.remove(function(err,done){
-					if(err){
-						return next(err);
-					}
-					res.json(done);
-				});
-			}else{
-				next({
-					status:204,
-					message:'User not found'
-				});
-			}
-		});
-	});
-
-	return router;
+    return router;
 }

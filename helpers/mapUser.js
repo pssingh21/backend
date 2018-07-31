@@ -1,8 +1,6 @@
 module.exports = function(user, userDetails) {
     if (userDetails.username)
         user.username = userDetails.username;
-    if (userDetails.dateOfBirth)
-        user.dateOfBirth = userDetails.dateOfBirth;
     if (userDetails.address)
         user.address = userDetails.address;
     if (userDetails.contactNumber)

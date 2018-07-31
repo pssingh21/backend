@@ -1,12 +1,24 @@
 var mongoose = require('mongoose');
 var Schema  = mongoose.Schema;
 
-var productSchema = new Schema({
-	skills:[string]
-},{
-	timestamps:true
+var userDetailsSchema = new Schema({
+	skills:{
+	type:String
+	},
+	particularUser:[{
+		username:{
+			type:String,
+			unique:true
+		},
+		skills:{
+			type:String
+		}
+	}]
+},
+{
+	versionKey:false
 });
 
-var productModel = mongoose.model('product', productSchema);
+var userDetailsModel = mongoose.model('userDetails', userDetailsSchema);
 
-module.exports = productModel;
+module.exports = userDetailsModel;

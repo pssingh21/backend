@@ -29,7 +29,7 @@ app.use(expressValidator());
 //routing level middleware
 //mounting
 app.use(cors());
-app.use('/', dashboard);
+app.use('/dashboard', dashboard);
 app.use('/auth', authRoute);
 app.use('/user', authenticate, userRoute);
 // app.use('/product', productRoute);
